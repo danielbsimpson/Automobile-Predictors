@@ -70,15 +70,15 @@ The RSE is equal to 4.333
 The R-squared value is 0.6918, so 69.18% of the MPG is explained by the regression line.
 
 ```{r echo=FALSE}
-plot(Auto$weight, Auto$acceleration, xlab = "Weight", ylab = "Acceleration", main = "Acceleration vs Weight")
-lm.fit <- lm(Auto$acceleration ~ Auto$weight, Auto)
+plot(Auto$mpg, Auto$acceleration, xlab = "MPG", ylab = "Acceleration", main = "Acceleration vs MPG")
+lm.fit <- lm(Auto$acceleration ~ Auto$mpg, Auto)
 abline(lm.fit, col = 'red')
 legend("topright", legend = "Regression Line", lty = 1, col = "red")
 summary(lm.fit)
 ```
 
 The RSE is equal to 0.1738
-The R-squared value is 0.1716, so only 17.16% of the acceleration is explained by regression line for weight.
+The R-squared value is 0.1716, so only 17.16% of the acceleration is explained by regression line for MPG.
 
 ```{r echo = FALSE}
 plot(Auto$mpg, Auto$displacement, xlab = "MPG", ylab = "Displacement", main = "MPG vs Displacement")
