@@ -1,7 +1,7 @@
 ---
-title: "Homework 1 - Big Data in R"
+title: "Auto Dataset and Exploring Correlation and Linear regressions"
 author: "Daniel Simpson"
-date: "Sunday, November 24, 2019"
+date: "Thursday, July 16, 20202"
 output:
   word_document: default
   html_document: default
