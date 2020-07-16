@@ -1,0 +1,136 @@
+---
+title: "Homework 1 - Big Data in R"
+author: "Daniel Simpson"
+date: "Sunday, November 24, 2019"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+Import the appropriate dataset:
+```{r}
+library(ISLR)
+mydata <- Auto
+```
+A full summary of the Auto dataset:
+```{r}  
+summary(Auto)
+```
+
+Variance for each varaible in the Auto dataset:
+```{r}
+sapply(Auto[,-c(7,8,9)], var)
+```
+
+Make a plot of all the predictor variables to see any correlations:
+```{r echo = FALSE}
+plot(Auto[,-c(7,8,9)], lower.panel = NULL)
+```
+
+Or we can use a correlation plot to visualize the correlation between each predictor:
+```{r}
+library(corrplot)
+correlation_matrix <- cor(Auto[,-c(7,8,9)])
+
+corrplot(correlation_matrix, type = "upper", order = "hclust", 
+         tl.col = "black", tl.srt = 45)
+```
+This plot allows us to see that the larger the circle, the more of a correlation the predictors have. 
+Dark blue indicates a positive correlation, while dark red indicates a negative correlation. 
+This allows us to identify easily whether the predictors share a relationship or not. 
+Obviously the diagonals can be ignored as they represent the predictors relationship with themselves.
+
+
+
+We can further investigate this correlation by ploting the two predictors and assigning a best fit line.
+  
+
+```{r echo=FALSE}
+lm.fit <- lm(mpg ~ horsepower, data = mydata)
+plot(mydata$horsepower, mydata$mpg,
+     xlab="horsepower", ylab = "mpg",
+     main = "Horsepower vs MPG with regression line",
+     ylim = c(0,60), xlim = c(30,280))
+abline(lm.fit, col = "red")
+legend("topright", legend = "Regression Line", lty = 1, col = "red")
+summary(lm.fit)
+```
+The RSE is equal to 4.906
+The R-squared value is 0.6049, so about 60.49% of the MPG can be explained by the regression line.
+
+We can then add confidence and predictive intervals:
+
+```{r}
+plot(mydata$horsepower, mydata$mpg,
+     xlab="Horsepower", ylab = "MPG",
+     main = "Horsepower vs MPG",
+     ylim = c(5,50), xlim = c(40,245))
+abline(lm.fit, col = "red")
+newdata1 <- seq(20, 280, by = 50)
+conf_int <- predict(lm.fit, newdata = data.frame(horsepower = newdata1), interval = "confidence", level = 0.99)
+pred_int <- predict(lm.fit, newdata = data.frame(horsepower = newdata1), interval = "prediction", level = 0.99)
+lines(newdata1, conf_int[,2], col="blue", lty=4)
+lines(newdata1, conf_int[,3], col="blue", lty=4)
+lines(newdata1, pred_int[,2], col="purple", lty=5)
+lines(newdata1, pred_int[,3], col="purple", lty=5)
+legend("topright", legend = c("Regression line", "Confidence Interval", "Predictor Interval"), col = c("red", "blue","purple"), lty = c(1,4,5), cex = 0.8)
+```
+
+Or we can look at the prediction of MPG when horsepower = 89:
+
+```{r}
+predict(lm.fit, data.frame(horsepower = 89))
+```
+
+By setting the interval to 99% we can observe the confidence interval at horsepower set to 89:
+
+```{r}
+predict(lm.fit, data.frame(horsepower = 89), interval = "confidence", level = 0.99)
+
+```
+
+We can also look at the prediction interval for 99% for horsepower set to 89:
+
+```{r}
+predict(lm.fit, data.frame(horsepower = 89), interval = "prediction", level = 0.99)
+
+```
+
+
+```{r echo = FALSE}
+plot(Auto$weight, Auto$mpg, xlab = "Weight", ylab = "MPG", main = "MPG vs Weight")
+lm.fit <- lm(Auto$mpg ~ Auto$weight, Auto)
+abline(lm.fit, col = 'green')
+legend("topright", legend = "Regression Line", lty = 1, col = "green")
+summary(lm.fit)
+```
+The RSE is equal to 4.333
+The R-squared value is 0.6918, so 69.18% of the MPG is explained by the regression line.
+
+```{r echo=FALSE}
+plot(Auto$weight, Auto$acceleration, xlab = "Weight", ylab = "Acceleration", main = "Acceleration vs Weight")
+lm.fit <- lm(Auto$acceleration ~ Auto$weight, Auto)
+abline(lm.fit, col = 'red')
+legend("topright", legend = "Regression Line", lty = 1, col = "red")
+summary(lm.fit)
+```
+
+The RSE is equal to 0.1738
+The R-squared value is 0.1716, so only 17.16% of the acceleration is explained by regression line for weight.
+
+```{r echo = FALSE}
+plot(Auto$mpg, Auto$displacement, xlab = "MPG", ylab = "Displacement", main = "MPG vs Displacement")
+lm.fit <- lm(Auto$displacement ~ Auto$mpg, Auto)
+abline(lm.fit, col = 'blue')
+legend("topright", legend = "Regression Line", lty = 1, col = "blue")
+summary(lm.fit)
+```
+The RSE is equal to 62.14
+The R-squared value is 0.6473 so 64.73% of the displacement is explained by the regression line for MPG.
+
+Based on the above plots, there are a number of predictors that can be useful in predicting MPG. 
+Almost all of the predictors share a very strong relationship with the MPG predictor, including: horsepower, weight, cylinders, and displacement. 
+Acceleration is the only predictor which doesn't have a very strong correlation with MPG. 
+This is seen by plotting the correlation matrix along with observing the graphs individually.
+
+
